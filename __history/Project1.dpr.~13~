@@ -132,13 +132,13 @@ begin
   if not isError then
   begin
     x := x + h;
-    while comp(x, finish) do
-    begin
-      ans := Compute(x);
-      LogResult(x, ans);
-      x := x + h;
-    end;
+  while comp(x, finish) do
+  begin
+    ans := Compute(x);
+    LogResult(x, ans);
+    x := x + h;
   end;
+
 
   ans := Compute(b);
   LogResult(b, ans);

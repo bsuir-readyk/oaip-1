@@ -101,6 +101,14 @@ begin
   // Write('pres: ');
   // ReadLn(pres);
 
+  if (not(a = b)) and (h = 0) then
+    ThrowError('{h} cant be 0 in case {a} != {b}');
+  if (b > a) and (h < 0) then
+    ThrowError
+      ('{h} must be greater than 0 in case {b} is greater than {a}');
+  if (b < a) and (h > 0) then
+    ThrowError('{h} must be less 0 in case {b} is less than {a}');
+
   if h > 0 then
   begin
     x := Min(a, b);
@@ -114,30 +122,11 @@ begin
     comp := CompGreater;
   end;
 
-  ans := Compute(a);
-  LogResult(a, ans);
-
-
-//  if (not(a = b)) and (h = 0) then
-//    ThrowError('{h} cant be 0 in case {a} != {b}');
-//  if (b > a) and (h < 0) then
-//    ThrowError('{h} must be greater than 0 in case {b} is greater than {a}');
-//  if (b < a) and (h > 0) then
-//    ThrowError('{h} must be less 0 in case {b} is less than {a}');
-
-  isError := ((not(a = b)) and (h = 0))
-                or ((b > a) and (h < 0))
-                or ((b < a) and (h > 0));
-
-  if not isError then
+  while comp(x, finish) do
   begin
+    ans := Compute(x);
+    LogResult(x, ans);
     x := x + h;
-    while comp(x, finish) do
-    begin
-      ans := Compute(x);
-      LogResult(x, ans);
-      x := x + h;
-    end;
   end;
 
   ans := Compute(b);

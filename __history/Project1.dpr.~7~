@@ -82,24 +82,33 @@ var
 begin
   Write('a: ');
   Readln(input);
-  isError := not TryStrToFloat(input, a);
+  isError := false;
+  isError := TryStrToFloat(input, a);
   if isError then
     ThrowError('{a} should be float');
 
 
   Write('b: ');
   Readln(input);
-  isError := not TryStrToFloat(input, b);
+  isError := TryStrToFloat(input, b);
   if isError then
     ThrowError('{b} should be float');
 
   Write('h: ');
   Readln(input);
-  isError := not TryStrToFloat(input, h);
+  isError := TryStrToFloat(input, h);
   if isError then
     ThrowError('{h} should be float');
   // Write('pres: ');
   // ReadLn(pres);
+
+  if (not(a = b)) and (h = 0) then
+    ThrowError('{h} cant be 0 in case {a} != {b}');
+  if (b > a) and (h < 0) then
+    ThrowError
+      ('{h} must be greater than 0 in case {b} is greater than {a}');
+  if (b < a) and (h > 0) then
+    ThrowError('{h} must be less 0 in case {b} is less than {a}');
 
   if h > 0 then
   begin
@@ -114,30 +123,11 @@ begin
     comp := CompGreater;
   end;
 
-  ans := Compute(a);
-  LogResult(a, ans);
-
-
-//  if (not(a = b)) and (h = 0) then
-//    ThrowError('{h} cant be 0 in case {a} != {b}');
-//  if (b > a) and (h < 0) then
-//    ThrowError('{h} must be greater than 0 in case {b} is greater than {a}');
-//  if (b < a) and (h > 0) then
-//    ThrowError('{h} must be less 0 in case {b} is less than {a}');
-
-  isError := ((not(a = b)) and (h = 0))
-                or ((b > a) and (h < 0))
-                or ((b < a) and (h > 0));
-
-  if not isError then
+  while comp(x, finish) do
   begin
+    ans := Compute(x);
+    LogResult(x, ans);
     x := x + h;
-    while comp(x, finish) do
-    begin
-      ans := Compute(x);
-      LogResult(x, ans);
-      x := x + h;
-    end;
   end;
 
   ans := Compute(b);
