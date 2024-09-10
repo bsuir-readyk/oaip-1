@@ -130,7 +130,6 @@ begin
 
   needCycle := not (
     (h = 0)
-    or (a = b)
     or ((b > a) and (h < 0))
     or ((b < a) and (h > 0))
   );
@@ -150,10 +149,9 @@ begin
     end;
   end;
 
-  // when a != b
   if (
-    needCycle
-    or (not needCycle and (Abs(a - b) > (1 / 1e9)))
+    (not needCycle or (Abs(a - b) > (1 / 1e9)))
+    and (Abs(x - b) < 1 / 1e9)
   ) then
   begin
     ans := Compute(b, error);
