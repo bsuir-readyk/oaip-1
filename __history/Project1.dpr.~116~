@@ -41,14 +41,12 @@ begin
 end;
 
 // helpers
-procedure LogResult(x: Single; y: Single); overload; inline;
+procedure LogResult(x: Single; y: Single; error: String); inline;
 begin
-  WriteLn(Format('%8.3f %-15.4g', [x, y]));
-end;
-
-procedure LogResult(x: Single; error: String); overload; inline;
-begin
-  WriteLn(Format('%8.3f %-s', [x, error]));
+  if error <> '' then
+    WriteLn(Format('%8.3f %-s', [x, error]))
+  else
+    WriteLn(Format('%8.3f %-15.4g', [x, y]));
 end;
 
 procedure RepeatedReadTo(var readTo: Single; gentleInput: String = '');
@@ -77,10 +75,12 @@ function Compute(x: Single; out error: String): Single;
 var
   numerator, denominator: Single;
 begin
-  if x = 0 then
+  Writeln(Abs(x));
+  if (Abs(x) > 0) and (Abs(x) > 1/1e9) then
   begin
     error := 'функция не определена';
     Result := MaxInt;
+    // early return would be awesome
   end
   else
   begin
@@ -97,68 +97,63 @@ var
   comparator: function(a: Single; b: Single): Boolean;
   error: String;
   needCycle: Boolean;
-  a, b, h, x, ans, finish: Single;
+  a, b, h, x, finish, ans: Single;
 
 begin
   error := '';
+  needCycle := true;
 
   RepeatedReadTo(a, 'a: ');
   RepeatedReadTo(b, 'b: ');
   RepeatedReadTo(h, 'h: ');
 
-  // If step is above 0
-  if h > 0 then
-  begin
-    x := Min(a, b);
-    finish := Max(a, b);
-    comparator := CompLower;
-  end
-  else
-  begin
-    x := Max(a, b);
-    finish := Min(a, b);
-    comparator := CompGreater;
-  end;
-
   WriteLn('   x     y');
 
   ans := Compute(a, error);
-  if error <> '' then
-    LogResult(a, error)
-  else
-    LogResult(a, ans);
+  LogResult(a, ans, error);
 
   needCycle := not (
     (h = 0)
+    or (a = b)
     or ((b > a) and (h < 0))
     or ((b < a) and (h > 0))
   );
 
   if needCycle then
   begin
+    // check if step is above 0
+    if h > 0 then
+    begin
+      x := Min(a, b);
+      finish := Max(a, b);
+      comparator := CompLower;
+    end
+    else
+    begin
+      x := Max(a, b);
+      finish := Min(a, b);
+      comparator := CompGreater;
+    end;
+
+    // computations
     x := x + h;
     while comparator(x, finish) do
     begin
       ans := Compute(x, error);
-      if error <> '' then
-        LogResult(x, error)
-      else
-        LogResult(x, ans);
+      LogResult(x, ans, error);
 
       x := x + h;
     end;
   end;
 
+  // log finish result if neeeded
   if (
-    (not needCycle and (Abs(a - b) > (1 / 1e9)))
-    and (Abs(x - b) < 1 / 1e9)
+    needCycle
+    or (not needCycle and (Abs(a - b) > (1 / 1e9)))
   ) then
   begin
     ans := Compute(b, error);
-    if error <> '' then
-      LogResult(b, error)
-    else
-      LogResult(b, ans);
+    LogResult(b, ans, error);
   end;
 
   ReadLn;

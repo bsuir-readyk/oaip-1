@@ -75,10 +75,11 @@ function Compute(x: Single; out error: String): Single;
 var
   numerator, denominator: Single;
 begin
-  if x = 0 then
+  if Abs(x) < 1 / 1e6 then
   begin
     error := 'функция не определена';
     Result := MaxInt;
+    // early return would be awesome
   end
   else
   begin
@@ -138,7 +139,7 @@ begin
     while comparator(x, finish) do
     begin
       ans := Compute(x, error);
-      LogResult(a, ans, error);
+      LogResult(x, ans, error);
 
       x := x + h;
     end;
@@ -147,11 +148,11 @@ begin
   // log finish result if neeeded
   if (
     needCycle
-    or (not needCycle and (Abs(a - b) > (1 / 1e9)))
+    or (not needCycle and (Abs(a - b) > (1 / 1e6)))
   ) then
   begin
     ans := Compute(b, error);
-    LogResult(a, ans, error);
+    LogResult(b, ans, error);
   end;
 
   ReadLn;
