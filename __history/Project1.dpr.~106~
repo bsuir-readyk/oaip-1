@@ -106,20 +106,6 @@ begin
   RepeatedReadTo(b, 'b: ');
   RepeatedReadTo(h, 'h: ');
 
-  // If step is above 0
-  if h > 0 then
-  begin
-    x := Min(a, b);
-    finish := Max(a, b);
-    comparator := CompLower;
-  end
-  else
-  begin
-    x := Max(a, b);
-    finish := Min(a, b);
-    comparator := CompGreater;
-  end;
-
   WriteLn('   x     y');
 
   ans := Compute(a, error);
@@ -130,12 +116,28 @@ begin
 
   needCycle := not (
     (h = 0)
+    or (a = b)
     or ((b > a) and (h < 0))
     or ((b < a) and (h > 0))
   );
 
   if needCycle then
   begin
+    // check if step is above 0
+    if h > 0 then
+    begin
+      x := Min(a, b);
+      finish := Max(a, b);
+      comparator := CompLower;
+    end
+    else
+    begin
+      x := Max(a, b);
+      finish := Min(a, b);
+      comparator := CompGreater;
+    end;
+
+    // computations
     x := x + h;
     while comparator(x, finish) do
     begin
@@ -149,11 +151,10 @@ begin
     end;
   end;
 
-  writeln((not needCycle or (Abs(a - b) > (1 / 1e9))));
-
+  // log finish result if neeeded
   if (
-    (not needCycle or (Abs(a - b) > (1 / 1e9)))
-    and (Abs(x - b) > 1 / 1e9)
+    needCycle
+    or (not needCycle and (Abs(a - b) > (1 / 1e9)))
   ) then
   begin
     ans := Compute(b, error);
