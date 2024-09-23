@@ -12,7 +12,7 @@ function solve(length) {
         } else if (prev === "11") {
             res += "0";
         } else {
-            res += i%5 === 0 ? prev[0] : prev[1];
+            res += Math.random() < 0.5 ? "1" : "0";
         }
         prev = res[i-1] + res[i];
     }
@@ -25,21 +25,33 @@ function solve(length) {
  * @returns boolean
  * */
 function check(x) {
-    for (let l=1; l<=x.length/3; l++) {
+    for (let l=1; l<=x.length; l++) {
         for (let i=0; i<x.length/* -l*3 */; i++) {
             const a1=x.slice(i, i+l),
                 a2=x.slice(i+l, i+l*2),
                 a3=x.slice(i+2*l, i+l*3);
             if (a1 === a2 && a2 === a3) {
-                console.log("\n", x, '\n', l, i, '\n', a1, a2, a3);
-                throw new Error("check not passed");
+                // console.log("\n", x, '\n', l, i, '\n', a1, a2, a3);
+                return false
             }
         }
     }
+    return true;
 }
 
-
-const a = solve(50);
-check(a);
-console.log("success:", a);
+let ITERATE = true;
+let cnt = 0;
+try {
+    while (ITERATE) {
+        const a = solve(50);
+        cnt++;
+        if (check(a)) {
+            console.log("success:", a);
+            // throw "solved";
+        }
+    }
+} catch (e) {
+    console.error(e);
+    console.log("cnt:", cnt);
+}
 
