@@ -52,20 +52,19 @@ end;
 
 procedure Main;
 var
-  Iterating: Boolean;
+  Iterating, IsCheckPassed: Boolean;
   Cnt: Integer;
   A: string;
 begin
   Randomize;
   Iterating := True;
   Cnt := 0;
-
-
     while Iterating do
     begin
       A := Solve(50);
+      IsCheckedPassed := Check(A)
       Inc(Cnt);
-      if Check(A) then
+      if IsCheckedPassed then
       begin
         Writeln(Format('Success in %s, Result is: %s', [IntToStr(Cnt), A]));
         Iterating := False;
