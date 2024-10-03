@@ -62,9 +62,9 @@ begin
     while Iterating do
     begin
       A := Solve(50);
-      IsCheckedPassed := Check(A)
+      IsCheckPassed := Check(A);
       Inc(Cnt);
-      if IsCheckedPassed then
+      if IsCheckPassed then
       begin
         Writeln(Format('Success in %s, Result is: %s', [IntToStr(Cnt), A]));
         Iterating := False;
