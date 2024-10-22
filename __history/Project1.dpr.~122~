@@ -75,7 +75,8 @@ function Compute(x: Single; out error: String): Single;
 var
   numerator, denominator: Single;
 begin
-  if Abs(x) < 1 / 1e6 then
+  WriteLn(Abs(x), 1 / 1e6);
+  if Abs(x) < 1 / 1e9 then
   begin
     error := 'функция не определена';
     Result := MaxInt;
@@ -148,7 +149,7 @@ begin
   // log finish result if neeeded
   if (
     needCycle
-    or (not needCycle and (Abs(a - b) > (1 / 1e6)))
+    or (not needCycle and (Abs(a - b) > (1 / 1e9)))
   ) then
   begin
     ans := Compute(b, error);
